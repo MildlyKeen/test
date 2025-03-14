@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from scripts.validate_csv import validate_data
+from scripts.validate_csv import validate_csv
 
 def test_missing_values():
     df = pd.read_csv('data/heart_failure.csv')
