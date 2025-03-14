@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          pytest tests/test_data.py
+          pytest tests/test_training.py
+          pytest tests/test_explainability.py
+
+      - name: Train the model (if tests pass)
+        run: |
+          python scripts/train_model.py
+
+      - name: Evaluate the final model
+        run: |
+          python scripts/evaluate_model.py
+
+      - name: Perform SHAP analysis
+        run: |
+          python scripts/shap_analysis.py
