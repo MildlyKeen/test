@@ -8,3 +8,4 @@ joblib
 shap
 matplotlib
 flask
+pytest
