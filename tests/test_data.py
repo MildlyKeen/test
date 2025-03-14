@@ -7,7 +7,7 @@ from scripts.validate_csv import validate_csv
 
 def test_validate_csv():
     """Test if the CSV file passes the validation process."""
-    file_path = 'data/heart_failure_clinical_records_dataset.csv'
+    file_path = 'data/heart_failure.csv'
     
     # Call the validate_csv function
     try:
@@ -20,18 +20,18 @@ def test_validate_csv():
 
 def test_missing_values():
     """Test if the dataset has missing values."""
-    df = pd.read_csv('data/heart_failure_clinical_records_dataset.csv')
+    df = pd.read_csv('data/heart_failure.csv')
     assert df.isnull().sum().sum() == 0, "Dataset contains missing values."
 
 def test_data_types():
     """Test if the dataset has correct data types."""
-    df = pd.read_csv('data/heart_failure_clinical_records_dataset.csv')
+    df = pd.read_csv('data/heart_failure.csv')
     assert df['age'].dtype == float, "Age column should be of type float."
     assert df['ejection_fraction'].dtype == float, "Ejection fraction column should be of type float."
 
 def test_column_names():
     """Test if the dataset contains the required columns."""
-    df = pd.read_csv('data/heart_failure_clinical_records_dataset.csv')
+    df = pd.read_csv('data/heart_failure.csv')
     expected_columns = [
         'age', 'anaemia', 'creatinine_phosphokinase', 'diabetes', 'ejection_fraction',
         'high_blood_pressure', 'platelets', 'serum_creatinine', 'serum_sodium', 'sex',
