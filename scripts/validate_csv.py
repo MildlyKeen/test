@@ -5,7 +5,7 @@ REQUIRED_COLUMNS = ["age", "anaemia", "creatinine_phosphokinase", "diabetes",
                     "ejection_fraction", "high_blood_pressure", "platelets",
                     "serum_creatinine", "serum_sodium", "sex", "smoking", "time", "DEATH_EVENT"]
 
-def validate_csv(file_path="data/heart_failure_clinical_records_dataset.csv"):
+def validate_csv(file_path="data/heart_failure.csv"):
     """
     Validates the dataset by checking:
     - If the file exists and can be loaded.
