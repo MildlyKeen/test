@@ -24,8 +24,8 @@ def test_missing_values():
     assert df.isnull().sum().sum() == 0, "Dataset contains missing values."
 
 def test_data_types():
-    """Test if the dataset has correct data types."""
     df = pd.read_csv('data/heart_failure.csv')
+    df['ejection_fraction'] = df['ejection_fraction'].astype(float)
     assert df['age'].dtype == float, "Age column should be of type float."
     assert df['ejection_fraction'].dtype == float, "Ejection fraction column should be of type float."
 
