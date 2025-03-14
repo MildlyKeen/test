@@ -24,6 +24,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          
+      - name: Balance heart failure data
+        run: |
+          python balance_data.py
 
       - name: Run unit tests
         run: |
