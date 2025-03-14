@@ -1,7 +1,7 @@
-import pytest
+import sys
 import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from train import train_model
-
 def test_model_training():
     # Assuming `train_model` returns a trained model or saves the model to a file
     model = train_model('data/heart_failure_balanced.csv')
