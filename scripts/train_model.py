@@ -10,8 +10,8 @@ from sklearn.metrics import accuracy_score
 def train_model():
     # Load dataset
     df = pd.read_csv("data/heart_failure_balanced.csv")
-    X = df.drop(columns=["target"])
-    y = df["target"]
+    X = df.drop(columns=["DEATH_EVENT"])
+    y = df["DEATH_EVENT"]
 
     # Split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
