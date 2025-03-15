@@ -10,8 +10,8 @@ from sklearn.metrics import accuracy_score
 def train_model(data_path="data/heart_failure_balanced.csv"):
     # Load dataset
     df = pd.read_csv(data_path)
-    X = df.drop(columns=["target"])
-    y = df["target"]
+    X = df.drop(columns=["DEATH_EVENT"])
+    y = df["DEATH_EVENT"]
 
     # Split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -48,10 +48,8 @@ def train_model(data_path="data/heart_failure_balanced.csv"):
     joblib.dump(best_model, "models/final_model.pkl")
     print("✅ Best model trained and saved!")
 
-    return model_scores, best_model
+    return best_model
 
 if __name__ == "__main__":
-    model_scores, best_model = train_model()
-    print("\nModel Scores:")
-    for name, score in model_scores.items():
-        print(f"{name}: {score:.4f}")
+    best_model = train_model()
+    print("\nModel trained and saved!")
