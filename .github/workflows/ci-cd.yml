@@ -29,6 +29,10 @@ jobs:
       run: |
         pytest -s tests/test_data.py
 
+    - name: Balance the dataset
+      run: |
+        python scripts/balance_data.py
+
     - name: Train the model
       run: |
         python scripts/model_comparison.py
