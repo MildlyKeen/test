@@ -1,4 +1,14 @@
+import logging
 from flask import Flask, request, render_template_string, redirect, url_for, session
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
 import joblib
 import pandas as pd
 import numpy as np
@@ -83,6 +93,13 @@ def login():
         app.logger.error(f'Error in login route: {str(e)}')
         return render_template_string(LOGIN_TEMPLATE, error="Une erreur s'est produite. Veuillez réessayer.")
 
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
+
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if not session.get('logged_in'):
@@ -95,7 +112,17 @@ def predict():
 
     if request.method == 'POST':
         try:
-            input_data = {feature: float(request.form[feature]) for feature in FEATURES}
+            input_data = {}
+            for feature in FEATURES:
+                value = request.form[feature]
+                if feature == 'sex':
+                    input_data[feature] = 'Male' if float(value) == 1 else 'Female'
+                elif feature in ['anaemia', 'diabetes', 'high_blood_pressure', 'smoking']:
+                    if float(value) not in [0, 1]:
+                        raise ValueError(f"{feature} must be 0 or 1")
+                    input_data[feature] = 'Yes' if float(value) == 1 else 'No'
+                else:
+                    input_data[feature] = float(value)
             form_values = input_data
             input_df = pd.DataFrame([input_data])
             
@@ -116,10 +143,13 @@ def predict():
                                        error=f"Erreur: {str(e)}", 
                                        form_values=form_values)
 
-    return render_template_string(PREDICT_TEMPLATE, features=FEATURES, 
+    print("DEBUG: Rendering predict template")
+    template = render_template_string(PREDICT_TEMPLATE, features=FEATURES, 
                                prediction=prediction, probability=probability,
                                pie_chart_image=pie_chart_image,
                                form_values=form_values)
+    print(f"DEBUG: Template content start: {template[:200]}...")
+    return template
 
 @app.route('/logout')
 def logout():
@@ -289,8 +319,20 @@ PREDICT_TEMPLATE = """
         {% for feature in features %}
         <div class="form-group">
           <label for="{{ feature }}">{{ feature.replace('_', ' ').title() }}:</label>
-          <input type="number" step="any" id="{{ feature }}" name="{{ feature }}" 
-                 value="{{ form_values[feature] }}" required>
+          {% if feature == 'sex' %}
+            <select id="{{ feature }}" name="{{ feature }}" required>
+              <option value="1" {% if form_values[feature] == 'Male' %}selected{% endif %}>Male</option>
+              <option value="0" {% if form_values[feature] == 'Female' %}selected{% endif %}>Female</option>
+            </select>
+          {% elif feature in ['anaemia', 'diabetes', 'high_blood_pressure', 'smoking'] %}
+            <select id="{{ feature }}" name="{{ feature }}" required>
+              <option value="1" {% if form_values[feature] == 'Yes' %}selected{% endif %}>Yes</option>
+              <option value="0" {% if form_values[feature] == 'No' %}selected{% endif %}>No</option>
+            </select>
+          {% else %}
+            <input type="number" step="any" id="{{ feature }}" name="{{ feature }}" 
+                   value="{{ form_values[feature] }}" required>
+          {% endif %}
         </div>
         {% endfor %}
       </div>
@@ -332,8 +374,9 @@ if __name__ == '__main__':
     app.logger.setLevel('DEBUG')
     app.logger.info('Starting application...')
     try:
-        # Run without debug mode to avoid threading issues
-        app.run(debug=False)
+        # Enable debug mode and set logging level
+        app.run(debug=True)
+        app.logger.setLevel('DEBUG')
     except Exception as e:
         app.logger.error(f'Application error: {str(e)}')
         raise
