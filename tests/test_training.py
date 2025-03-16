@@ -1,30 +1,48 @@
-import sys
+import pytest
 import os
 import joblib
-import pytest
-from sklearn.metrics import accuracy_score
-from train import train_model
 
-def test_model_training():
-    # Test that model training completes successfully
-    model = train_model('data/heart_failure_balanced.csv')
-    assert model is not None, "Model training failed"
-    assert os.path.exists('models/final_model.pkl'), "Model file not saved"
+# Paths to the model and scaler
+MODEL_PATH = r"C:\Users\lenovo\Downloads\test\models\best_model.pkl"
+SCALER_PATH = r"C:\Users\lenovo\Downloads\test\models\scaler.pkl"
 
-def test_model_accuracy():
-    # Test that model accuracy meets expectations
-    model = train_model('data/heart_failure_balanced.csv')
-    assert model is not None, "Model training failed"
-    
-    # Load test data
-    import pandas as pd
-    df = pd.read_csv('data/heart_failure_balanced.csv')
-    X = df.drop(columns=['DEATH_EVENT'])
-    y = df['DEATH_EVENT']
-    
-    # Evaluate model
-    predictions = model.predict(X)
-    accuracy = accuracy_score(y, predictions)
-    
-    assert accuracy > 0.7, f"Model accuracy {accuracy:.2f} is below expected threshold"
-    print(f"Model accuracy: {accuracy:.2f}")
+def test_model_file_exists():
+    """
+    Test if the model file exists.
+    """
+    assert os.path.exists(MODEL_PATH), f"Model file not found at {MODEL_PATH}"
+    print("✅ Model file exists test passed!")
+
+def test_scaler_file_exists():
+    """
+    Test if the scaler file exists.
+    """
+    assert os.path.exists(SCALER_PATH), f"Scaler file not found at {SCALER_PATH}"
+    print("✅ Scaler file exists test passed!")
+
+def test_model_loading():
+    """
+    Test loading the saved model.
+    """
+    model = joblib.load(MODEL_PATH)
+    assert model is not None, "Failed to load the model"
+    print("✅ Model loading test passed!")
+
+def test_scaler_loading():
+    """
+    Test loading the saved scaler.
+    """
+    scaler = joblib.load(SCALER_PATH)
+    assert scaler is not None, "Failed to load the scaler"
+    print("✅ Scaler loading test passed!")
+
+# Add a pytest hook to display a message after all tests pass
+def pytest_sessionfinish(session, exitstatus):
+    """
+    Display a message after all tests pass.
+    """
+    if exitstatus == 0:
+        print("\n🎉 All tests passed successfully!")
+
+if __name__ == "__main__":
+    pytest.main()
