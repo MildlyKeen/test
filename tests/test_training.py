@@ -3,8 +3,8 @@ import os
 import joblib
 
 # Paths to the model and scaler
-MODEL_PATH = r"C:\Users\lenovo\Downloads\test\models\best_model.pkl"
-SCALER_PATH = r"C:\Users\lenovo\Downloads\test\models\scaler.pkl"
+MODEL_PATH = os.path.join("models", "best_model.pkl")
+SCALER_PATH = os.path.join("models", "scaler.pkl")
 
 def test_model_file_exists():
     """
