@@ -143,13 +143,10 @@ def predict():
                                        error=f"Erreur: {str(e)}", 
                                        form_values=form_values)
 
-    print("DEBUG: Rendering predict template")
-    template = render_template_string(PREDICT_TEMPLATE, features=FEATURES, 
+    return render_template_string(PREDICT_TEMPLATE, features=FEATURES, 
                                prediction=prediction, probability=probability,
                                pie_chart_image=pie_chart_image,
                                form_values=form_values)
-    print(f"DEBUG: Template content start: {template[:200]}...")
-    return template
 
 @app.route('/logout')
 def logout():
@@ -325,10 +322,8 @@ PREDICT_TEMPLATE = """
               <option value="0" {% if form_values[feature] == 'Female' %}selected{% endif %}>Female</option>
             </select>
           {% elif feature in ['anaemia', 'diabetes', 'high_blood_pressure', 'smoking'] %}
-            <select id="{{ feature }}" name="{{ feature }}" required>
-              <option value="1" {% if form_values[feature] == 'Yes' %}selected{% endif %}>Yes</option>
-              <option value="0" {% if form_values[feature] == 'No' %}selected{% endif %}>No</option>
-            </select>
+            <input type="number" id="{{ feature }}" name="{{ feature }}" 
+                   min="0" max="1" step="1" required>
           {% else %}
             <input type="number" step="any" id="{{ feature }}" name="{{ feature }}" 
                    value="{{ form_values[feature] }}" required>
@@ -371,12 +366,4 @@ PREDICT_TEMPLATE = """
 """
 
 if __name__ == '__main__':
-    app.logger.setLevel('DEBUG')
-    app.logger.info('Starting application...')
-    try:
-        # Enable debug mode and set logging level
-        app.run(debug=True)
-        app.logger.setLevel('DEBUG')
-    except Exception as e:
-        app.logger.error(f'Application error: {str(e)}')
-        raise
+    app.run(debug=True)
