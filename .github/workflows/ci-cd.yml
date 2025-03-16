@@ -9,40 +9,55 @@ on:
       - main
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          
-      - name: Balance heart failure data
-        run: |
-          python scripts/balance_data.py
+    - name: Install dependencies
+      run: |
+        pip install pandas scikit-learn joblib xgboost lightgbm flask matplotlib pytest
 
-      - name: Run unit tests
-        run: |
-          pytest tests/test_data.py
-          pytest tests/test_training.py
-          pytest tests/test_explainability.py
+    - name: Run data tests
+      run: |
+        pytest -s tests/test_data.py
 
-      - name: Train the model (if tests pass)
-        run: |
-          python scripts/train_model.py
+    - name: Train the model
+      run: |
+        python scripts/model_comparison.py
 
-      - name: Evaluate the final model
-        run: |
-          python scripts/evaluate_model.py
+    - name: Run training tests
+      run: |
+        pytest -s tests/test_training.py
 
-      - name: Perform SHAP analysis
-        run: |
-          python scripts/shap_analysis.py
+    - name: Run explainability tests
+      run: |
+        pytest -s tests/test_explainability.py
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        pip install pandas scikit-learn joblib xgboost lightgbm flask matplotlib
+
+    - name: Deploy application
+      run: |
+        python app.py
