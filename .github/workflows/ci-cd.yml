@@ -23,7 +23,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install pandas scikit-learn joblib xgboost lightgbm flask matplotlib pytest
+        pip install -r requirements.txt
 
     - name: Run data tests
       run: |
@@ -60,7 +60,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install pandas scikit-learn joblib xgboost lightgbm flask matplotlib
+        pip install -r requirements.txt
 
     - name: Deploy application
       run: |
