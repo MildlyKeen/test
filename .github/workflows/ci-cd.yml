@@ -28,8 +28,8 @@ jobs:
     - name: Copy model files
       run: |
         mkdir -p models
-        cp /workspaces/test5/models/best_model.pkl
-        cp /workspaces/test5/models/scaler.pkl
+        cp /workspaces/test5/models/best_model.pkl models/best_model.pkl
+        cp /workspaces/test5/models/scaler.pkl models/scaler.pkl
 
     - name: Run data tests
       run: |
@@ -67,6 +67,12 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
+
+    - name: Copy model files
+      run: |
+        mkdir -p models
+        cp /workspaces/test5/models/best_model.pkl models/best_model.pkl
+        cp /workspaces/test5/models/scaler.pkl models/scaler.pkl
 
     - name: Deploy application
       run: |
