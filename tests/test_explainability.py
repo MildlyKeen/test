@@ -9,8 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the best model and scaler
-MODEL_PATH = r"C:\Users\lenovo\Downloads\test\models\best_model.pkl"
-SCALER_PATH = r"C:\Users\lenovo\Downloads\test\models\scaler.pkl"
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '../models/best_model.pkl')
+SCALER_PATH = os.path.join(os.path.dirname(__file__), '../models/scaler.pkl')
 
 # Ensure the model and scaler files exist
 assert os.path.exists(MODEL_PATH), f"Model file not found at {MODEL_PATH}"
