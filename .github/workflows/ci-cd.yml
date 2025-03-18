@@ -25,6 +25,12 @@ jobs:
       run: |
         pip install -r requirements.txt
 
+    - name: Copy model files
+      run: |
+        mkdir -p models
+        cp /path/to/your/models/best_model.pkl models/best_model.pkl
+        cp /path/to/your/models/scaler.pkl models/scaler.pkl
+
     - name: Run data tests
       run: |
         pytest -s tests/test_data.py
